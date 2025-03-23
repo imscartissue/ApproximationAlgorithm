@@ -4,8 +4,6 @@
 #include <unordered_set>
 #include <limits>
 
-using namespace std;
-
 struct Edge {
 	int to;
 	double weight;
@@ -16,7 +14,7 @@ struct Edge {
 class Graph {
 public:
 	int V;
-	vector<vector<Edge>> adj;
+	std::vector<std::vector<Edge>> adj;
 
 	Graph(int vertices) : V(vertices), adj(vertices) {}
 
@@ -26,12 +24,12 @@ public:
 	}
 
 	// Prim's Algorithm to Compute MST
-	vector<vector<int>> getMST() {
-		vector<bool> inMST(V, false);
-		vector<int> parent(V, -1);
-		vector<double> key(V, numeric_limits<double>::max());
+	std::vector<std::vector<int>> getMST() {
+		std::vector<bool> inMST(V, false);
+		std::vector<int> parent(V, -1);
+		std::vector<double> key(V, std::numeric_limits<double>::max());
 
-		priority_queue<pair<double, int>, vector<pair<double, int>>, greater<>> pq;
+		std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>, std::greater<>> pq;
 		pq.push({ 0, 0 });  // Start from node 0
 		key[0] = 0;
 
@@ -56,7 +54,7 @@ public:
 		}
 
 		// Build MST as an adjacency list
-		vector<vector<int>> mst(V);
+		std::vector<std::vector<int>> mst(V);
 		for (int i = 1; i < V; i++) {
 			if (parent[i] != -1) {
 				mst[parent[i]].push_back(i);
@@ -68,7 +66,7 @@ public:
 };
 
 // Depth-First Search (DFS) Preorder Walk
-void dfs(int node, const vector<vector<int>>& mst, unordered_set<int>& visited, vector<int>& tour) {
+void dfs(int node, const std::vector<std::vector<int>>& mst, std::unordered_set<int>& visited, std::vector<int>& tour) {
 	visited.insert(node);
 	tour.push_back(node);
 	for (int neighbor : mst[node]) {
@@ -80,17 +78,17 @@ void dfs(int node, const vector<vector<int>>& mst, unordered_set<int>& visited, 
 }
 
 // Approximate TSP Solver using MST + Preorder Walk
-vector<int> tspApproximation(Graph& graph) {
-	vector<vector<int>> mst = graph.getMST();
+std::vector<int> tspApproximation(Graph& graph) {
+	std::vector<std::vector<int>> mst = graph.getMST();
 
 	// Step 2: Preorder DFS traversal of MST
-	vector<int> eulerTour;
-	unordered_set<int> visited;
+	std::vector<int> eulerTour;
+	std::unordered_set<int> visited;
 	dfs(0, mst, visited, eulerTour);
 
 	// Step 3: Shortcut repeated nodes to form Hamiltonian cycle
-	vector<int> tspTour;
-	unordered_set<int> seen;
+	std::vector<int> tspTour;
+	std::unordered_set<int> seen;
 	for (int node : eulerTour) {
 		if (!seen.count(node)) {
 			tspTour.push_back(node);
@@ -103,7 +101,7 @@ vector<int> tspApproximation(Graph& graph) {
 }
 
 // Compute the total cost of the TSP Tour
-double computeTourCost(const vector<int>& tour, Graph& graph) {
+double computeTourCost(const std::vector<int>& tour, Graph& graph) {
 	double cost = 0.0;
 	for (size_t i = 0; i < tour.size() - 1; i++) {
 		int u = tour[i], v = tour[i + 1];
@@ -129,14 +127,14 @@ int main() {
 	graph.addEdge(2, 3, 5);
 
 	// Run Approximation Algorithm
-	vector<int> tspTour = tspApproximation(graph);
+	std::vector<int> tspTour = tspApproximation(graph);
 	double approxCost = computeTourCost(tspTour, graph);
 
 	// Output Results
-	cout << "Approximate TSP Tour: ";
-	for (int node : tspTour) cout << node << " ";
-	cout << endl;
-	cout << "Approximate Cost: " << approxCost << endl;
+	std::cout << "Approximate TSP Tour: ";
+	for (int node : tspTour) std::cout << node << " ";
+	std::cout << std::endl;
+	std::cout << "Approximate Cost: " << approxCost << std::endl;
 
 	return 0;
 }
